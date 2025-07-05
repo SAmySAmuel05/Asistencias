@@ -200,7 +200,7 @@ function editarPersona() {
     return mostrarMensaje("Completa ambos nombres para editar", true);
   }
 
-  fetch('http://localhost:8000/editar', {
+  fetch('https://asistencias-n0io.onrender.com/editar', {
     method: 'PUT',
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     body: `nombre_actual=${encodeURIComponent(nombreActual)}&nuevo_nombre=${encodeURIComponent(nuevoNombre)}`
@@ -251,7 +251,7 @@ document.addEventListener('click', function (e) {
 
 
 function mostrarResumenPersonas() {
-  fetch('http://localhost:8000/resumen/personas')
+  fetch('https://asistencias-n0io.onrender.com/resumen/personas')
     .then(res => res.json())
     .then(data => {
       const tbody = document.querySelector('#tablaResumen tbody');
@@ -301,7 +301,7 @@ function mostrarResumenMes() {
 
 
 function mostrarResumenDias() {
-  fetch('http://localhost:8000/resumen/dias')
+  fetch('https://asistencias-n0io.onrender.com/resumen/dias')
     .then(res => res.json())
     .then(data => {
       const tbody = document.querySelector('#tablaResumenDias tbody');
