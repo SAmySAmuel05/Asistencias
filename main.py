@@ -10,7 +10,14 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from fastapi.responses import StreamingResponse
 import io
 
+from fastapi import FastAPI
+
 app = FastAPI()
+
+@app.get("/")
+def inicio():
+    return {"mensaje": "App funcionando"}
+
 
 app.add_middleware(
     CORSMiddleware,
