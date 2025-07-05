@@ -2,7 +2,7 @@ let listaNombres = [];
 
 window.onload = async function () {
   try {
-    const res = await fetch('http://localhost:8000/nombres');
+    const res = await fetch('https://asistencias-n0io.onrender.com/nombres');
     listaNombres = await res.json();
 
     console.log('Nombres cargados:', listaNombres); // Asegúrate de que no esté vacío
@@ -141,7 +141,7 @@ function marcar(estado) {
     return;
   }
 
-  fetch('http://localhost:8000/marcar', {
+  fetch('https://asistencias-n0io.onrender.com/marcar', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -174,7 +174,7 @@ function agregarPersona() {
 
   if (!nombre) return mostrarMensaje("El nombre es obligatorio", true);
 
-  fetch('http://localhost:8000/agregar', {
+  fetch('https://asistencias-n0io.onrender.com/agregar', {
     method: 'POST',
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     body: `nombre=${encodeURIComponent(nombre)}`
@@ -219,7 +219,7 @@ function borrarPersona() {
   const nombre = document.getElementById('nombreNuevo').value.trim();
   if (!nombre) return mostrarMensaje("Escribe el nombre a borrar", true);
 
-  fetch('http://localhost:8000/borrar', {
+  fetch('https://asistencias-n0io.onrender.com/borrar', {
     method: 'DELETE',
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     body: `nombre=${encodeURIComponent(nombre)}`
@@ -278,7 +278,7 @@ function mostrarResumenMes() {
     return;
   }
 
-  fetch(`http://localhost:8000/resumen/personas/mes?mes=${mes}`)
+  fetch(`https://asistencias-n0io.onrender.com/resumen/personas/mes?mes=${mes}`)
     .then(res => res.json())
     .then(data => {
       const tbody = document.querySelector('#tablaResumen tbody');
@@ -356,7 +356,7 @@ function actualizarSeleccion(items) {
 }
 
 function descargarExcel() {
-  fetch('http://localhost:8000/descargar-excel')
+  fetch('https://asistencias-n0io.onrender.com/descargar-excel')
     .then(response => {
       if (!response.ok) throw new Error('Error al descargar el archivo');
       return response.blob();

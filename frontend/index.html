@@ -222,7 +222,7 @@ window.onload = async function () {
 
   // 🔵 Cargar nombres
   try {
-    const res = await fetch('http://localhost:8000/nombres');
+    const res = await fetch('https://asistencias-n0io.onrender.com/nombres');
     listaNombres = await res.json();
 
     const input = document.getElementById('inputNombre');
