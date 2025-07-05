@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es" class="transition">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class'
+  }
+</script>
+  <title>Registro de asistencia</title>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen p-4">
+
+<!-- Interruptor modo oscuro -->
+<div class="text-right mb-4">
+  <button
+    id="modoToggle"
+    onclick="toggleDarkMode()"
+    class="relative w-14 h-8 bg-gray-300 dark:bg-gray-600 rounded-full transition duration-300"
+    aria-label="Cambiar modo oscuro"
+  >
+    <!-- Icono luna (modo claro) - va a la derecha cuando modo claro -->
+    <span
+      id="iconMoon"
+      class="absolute right-1 top-1 text-yellow-500 text-small block dark:hidden select-none pointer-events-none z-20"
+    >
+      <span class="material-icons">bedtime</span>
+    </span>
+
+    <!-- Icono sol (modo oscuro) - va a la izquierda cuando modo oscuro -->
+    <span
+      id="iconSun"
+      class="absolute left-1 top-1 text-yellow-400 text-small hidden dark:block select-none pointer-events-none z-20"
+    >
+      <span class="material-icons">brightness_high</span>
+    </span>
+
+    <!-- Thumb -->
+    <div
+      id="thumb"
+      class="absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 z-10"
+    ></div>
+  </button>
+</div>
+
+
+
+
+  <div id="mensaje" class="text-center text-sm mt-2 font-semibold"></div>
+
+<div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 space-y-8">
+    <h1 class="text-3xl font-bold text-center text-blue-600 dark:text-blue-400">Registro de Asistencia</h1>
+
+    <!-- Buscar persona -->
+    <div class="space-y-2">
+      <label for="inputNombre" class="font-semibold block">Buscar persona:</label>
+      <input
+  id="inputNombre"
+  type="text"
+  autocomplete="off"
+  placeholder="Escribe un nombre..."
+  class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:text-white"
+/>
+      <ul
+  id="resultados"
+  class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-sm max-h-40 overflow-y-auto hidden"
+></ul>
+
+    </div>
+
+    <!-- Fecha y botones -->
+    <div class="space-y-4">
+      <div>
+        <label for="fecha" class="block font-semibold mb-1">Fecha de asistencia:</label>
+        <input type="date" id="fecha"
+          class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4">
+        <button onclick="marcar('Asistencia')"
+          class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition">
+          Marcar Asistencia
+        </button>
+        <button onclick="marcar('Falta')"
+          class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition">
+          Marcar Falta
+        </button>
+      </div>
+    </div>
+
+    <!-- Administrar personas -->
+    <div class="space-y-4">
+      <h2 class="text-xl font-bold text-gray-700 dark:text-gray-200">Administrar Personas</h2>
+
+      <form id="formPersona" class="space-y-4">
+        <input type="text" id="nombreNuevo" placeholder="Nombre actual o nuevo" autocomplete="off"
+          class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:text-white" />
+        <div id="sugerenciasAdmin"
+          class="border border-gray-300 dark:border-gray-600 max-h-40 overflow-y-auto rounded-md p-2 text-sm dark:bg-gray-700">
+        </div>
+
+        <input type="text" id="nuevoNombre" placeholder="Nuevo nombre (para editar)"
+          class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:text-white" />
+
+        <div class="flex flex-wrap gap-4">
+          <button type="button" onclick="agregarPersona()"
+            class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition">
+            Agregar
+          </button>
+          <button type="button" onclick="editarPersona()"
+            class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg transition">
+            Editar nombre
+          </button>
+          <button type="button" onclick="borrarPersona()"
+            class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition">
+            Borrar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Resumen por Persona -->
+    <div class="space-y-4 mt-8">
+      <h2 class="text-2xl font-bold text-blue-700 dark:text-blue-300 text-center">Resumen por Persona</h2>
+
+      <div class="flex flex-col sm:flex-row sm:items-end gap-4">
+        <button onclick="mostrarResumenPersonas()"
+          class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg transition">
+          Ver resumen general
+        </button>
+
+        <div class="flex flex-col">
+          <label for="mesResumen" class="text-sm font-medium mb-1">Selecciona un mes:</label>
+          <input type="month" id="mesResumen"
+            class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:text-white" />
+        </div>
+
+        <button onclick="mostrarResumenMes()"
+          class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg transition">
+          Ver resumen mensual
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full border-collapse border border-gray-300 text-sm dark:border-gray-600" id="tablaResumen">
+          <thead class="bg-blue-100 dark:bg-blue-900 text-gray-800 dark:text-white">
+            <tr>
+              <th class="border px-3 py-2 text-left">Nombre</th>
+              <th class="border px-3 py-2 text-center">Asistencias</th>
+              <th class="border px-3 py-2 text-center">Faltas</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-800 text-gray-700 dark:text-white"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Resumen por Día -->
+    <div class="space-y-4 mt-8">
+      <h2 class="text-2xl font-bold text-blue-700 dark:text-blue-300 text-center">Resumen por Día</h2>
+
+      <button onclick="mostrarResumenDias()"
+        class="bg-purple-500 hover:bg-purple-600 text-white font-semibold px-4 py-2 rounded-lg transition">
+        Ver resumen
+      </button>
+
+      <div class="overflow-x-auto">
+        <table id="tablaResumenDias"
+          class="min-w-full border-collapse border border-gray-300 dark:border-gray-600 text-sm mt-2">
+          <thead class="bg-purple-100 dark:bg-purple-900 text-gray-800 dark:text-white">
+            <tr>
+              <th class="border px-3 py-2 text-left">Fecha</th>
+              <th class="border px-3 py-2 text-center">Asistencias</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-800 text-gray-700 dark:text-white"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Descargar Excel -->
+    <div class="text-center mt-10">
+      <button onclick="window.location.href='http://localhost:8000/descargar-excel'"
+        class="bg-green-700 hover:bg-green-800 text-white font-semibold px-6 py-3 rounded-lg transition">
+        📥 Descargar Excel
+      </button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+<script>
+async function toggleDarkMode() {
+  const html = document.documentElement;
+  const thumb = document.getElementById('thumb');
+  const isDark = html.classList.toggle('dark');
+  localStorage.setItem('modoOscuro', isDark);
+
+  if (isDark) {
+    thumb.classList.add('translate-x-6');
+  } else {
+    thumb.classList.remove('translate-x-6');
+  }
+}
+
+window.onload = async function () {
+  // ⚫ Modo oscuro
+  const isDark = localStorage.getItem('modoOscuro') === 'true';
+  const thumb = document.getElementById('thumb');
+
+  if (isDark) {
+    document.documentElement.classList.add('dark');
+    thumb.classList.add('translate-x-6');
+  } else {
+    document.documentElement.classList.remove('dark');
+    thumb.classList.remove('translate-x-6');
+  }
+
+  // 🔵 Cargar nombres
+  try {
+    const res = await fetch('http://localhost:8000/nombres');
+    listaNombres = await res.json();
+
+    const input = document.getElementById('inputNombre');
+    input.addEventListener('input', mostrarCoincidencias);
+  } catch (error) {
+    console.error('Error al cargar nombres:', error);
+  }
+
+  // 📅 Establecer la fecha
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  document.getElementById('fecha').value = `${yyyy}-${mm}-${dd}`;
+};
+</script>
+
+
+
+</body>
+</html>
